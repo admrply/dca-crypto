@@ -3,7 +3,24 @@ This python script uses asyncio and is designed to be run constantly to buy cryp
 This script automatically calculates the lowest possible timeframe for buying based on your schedule. For example, if you wanted to buy £70 of BTC every week, the script would automatically convert this to £10 a day as Binance's minimum order threshold is 10 GBP or 10 USDT. This works the other way too and it will store small amounts of DCA in a buffer and buy when the minimum order threshold is reached.
 Logs are streamed out to Telegram and systemd units are provided to watch for and report crashes.
 
+# Prerequisites
+- Assumes Ubuntu 1804+, but this should work on any system with python. The service files section at the bottom may differ on different systems.
+- Python 3.7+
+- Binance API tokens (see below)
+- Telegram API tokens (see below)
+
 ## Getting started
+### Installing prerequisites
+```(bash)
+sudo apt install -y python3 python3-venv
+python3 -V # Version *must* be 3.7+ in order for asyncio to work
+git clone https://github.com/admrply/dca-crypto.git
+cd dca-crypto
+python3 -m venv env
+. ./env/bin/activate
+pip install -r requirements.txt
+```
+
 ### Creating the config
 1. Rename (or copy) `config.py.template` to `config.py`.
 2. Create your Binance API keys ([guide](https://www.binance.com/en/support/faq/360002502072))
@@ -43,3 +60,15 @@ async def main():
     - This line will attempt to buy 30p of ETH every hour.
     - This value is too small to trade on Binance every hour, so the script will add this to a buffer each hour and then execute the trade when the value meets or exceeds the minimum trade value.
     - Note that the buffer is only added to on each 'tick', therefore the script will execute a larger buy of £10.20 after 34 hours instead of buying £10 worth after 33 hours and 20 minutes. This has no meaningful effect on your DCA as it ends up still being the same as buying 30p an hour.
+
+
+### Setting up as a service
+Whilst at this point you can now just run `python3 main.py`, it's recommended to set it up as a service so you can get a crash notification if it fails and get your logs into syslog.
+Service files have been provided for your convenience in the systemd-units folder!
+- Copy these files to `/etc/systemd/system/`
+- Change the folder path in the unit files (`/home/ubuntu/dca-crypto`) to where your repo is stored.
+- Make the entrypoint executable (`chmod +x /path/to/dca-crypto/main.py`)
+- `systemctl daemon-reload`
+- `systemctl start dca`
+- This service will not restart if it crashes to prevent duplicate and/or overspending.
+- To see logs: `systemctl status dca` or `journalctl -u dca`
