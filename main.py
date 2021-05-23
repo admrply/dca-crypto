@@ -72,7 +72,7 @@ async def dca(base_currency, quote_currency, amount, interval):
 async def main():
     # Schedule three calls concurrently:
     await asyncio.gather(
-        dca("BTC", "GBP", 0.3, "10"),
+        dca("BTC", "GBP", 0.3, "1h"),
         dca("ETH", "GBP", 0.3, "1h"),
         dca("ZIL", "USDT", 0.14, "1h"),
         dca("XTZ", "USDT", 0.14, "1h"),
