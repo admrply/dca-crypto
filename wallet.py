@@ -22,7 +22,7 @@ class Wallet:
 
     def add_dca(self, amount):
         # Round to account for floating point precision. 4 decimals should be enough given we're working with FIAT.
-        # May need upping to 6 if we start using BTC or ETH as the quote currency.
+        # May need upping to 6 or higher if we start using BTC or ETH as the quote currency.
         new_amount = round((self.buffered_dca_quote_value + amount), 4)
         logger.debug(f"Adding {amount} to {self.symbol} buffer. (Current total: {new_amount})")
         self.buffered_dca_quote_value = new_amount
