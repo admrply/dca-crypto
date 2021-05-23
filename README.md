@@ -22,14 +22,14 @@ pip install -r requirements.txt
 ```
 
 ### Creating the config
-1. Rename (or copy) `config.py.template`{:.bash} to `config.py`{:.bash}.
+1. Rename (or copy) `config.py.template` to `config.py`.
 2. Create your Binance API keys ([guide](https://www.binance.com/en/support/faq/360002502072))
     - Make sure it has the 'Enable Spot & Margin Trading' option ticked.
 3. Add your Binance API key and secret key to `config.py`
 4. Create a Telegram bot by talking to the [BotFather](https://t.me/botfather)
 5. Use the `/newbot` command in the BotFather chat to create a new bot and get a token.
-6. Add this token to `BOT_TOKEN` in `config.py`{:.bash}.
-7. Find your Telegram user ID to add to the `config.py`{:.bash} (Here's a [guide](https://medium.com/@tabul8tor/how-to-find-your-telegram-user-id-6878d54acafa) on how to find your ID)
+6. Add this token to `BOT_TOKEN` in `config.py`.
+7. Find your Telegram user ID to add to the `config.py` (Here's a [guide](https://medium.com/@tabul8tor/how-to-find-your-telegram-user-id-6878d54acafa) on how to find your ID)
 8. Make sure the trading fee is correct. This should be the decimal form of your trading percentage taker fee. You can find your fees [here](https://www.binance.com/en/fee/schedule)
     - Even if you get 20% kickback, use the fee schedule for the 25% off with BNB *only*. This is because the 20% kickback is refunded *after* the trade and you may end up with not enough BNB to pay for the fees if you use the full discount percentages.
     - e.g. If you use BNB for fees (which you should be!) and trade less than 50 BTC a month, your taker fee is 0.075%. When converted to decimal form, this is 0.00075 (the default value shown in the template)
@@ -49,26 +49,26 @@ async def main():
 - The fourth param is a string indicating the tick length.
     - The format for this 'time string' can contain any combination of weeks (w), days (d), hours (h), minutes (m) and seconds (s).
     - The following strings are examples of valid time tick strings:
-        - `"1w"`{.python}
-        - `"1d"`{:.python}
-        - `"3d12h"`{:.python}
-        - `"1w3d8h3m24s"`{:.python}
-- `dca("BTC", "GBP", 120, "1w")`{:.python}
+        - `"1w"`
+        - `"1d"`
+        - `"3d12h"`
+        - `"1w3d8h3m24s"`
+- `dca("BTC", "GBP", 120, "1w")`
     - This line will buy £120 of BTC every week.
     - The script will automatically convert this into buying £10 every 14 hours
-- `dca("ETH", "GBP", 0.3, "1h")`{:.python}
+- `dca("ETH", "GBP", 0.3, "1h")`
     - This line will attempt to buy 30p of ETH every hour.
     - This value is too small to trade on Binance every hour, so the script will add this to a buffer each hour and then execute the trade when the value meets or exceeds the minimum trade value.
     - Note that the buffer is only added to on each 'tick', therefore the script will execute a larger buy of £10.20 after 34 hours instead of buying £10 worth after 33 hours and 20 minutes. This has no meaningful effect on your DCA as it ends up still being the same as buying 30p an hour.
 
 
 ### Setting up as a service
-Whilst at this point you can now just run `python3 main.py`{:.bash}, it's recommended to set it up as a service so you can get a crash notification if it fails and get your logs into syslog.
+Whilst at this point you can now just run `python3 main.py`, it's recommended to set it up as a service so you can get a crash notification if it fails and get your logs into syslog.
 Service files have been provided for your convenience in the systemd-units folder!
-- Copy these files to `/etc/systemd/system/`{:.bash}
-- Change the folder path in the unit files (`/home/ubuntu/dca-crypto`{:.bash}) to where your repo is stored.
-- Make the entrypoint executable (`chmod +x /path/to/dca-crypto/main.py`{:.bash})
-- `systemctl daemon-reload`{:.bash}
-- `systemctl start dca`{:.bash}
+- Copy these files to `/etc/systemd/system/`
+- Change the folder path in the unit files (`/home/ubuntu/dca-crypto`) to where your repo is stored.
+- Make the entrypoint executable (`chmod +x /path/to/dca-crypto/main.py`)
+- `systemctl daemon-reload`
+- `systemctl start dca`
 - This service will not restart if it crashes to prevent duplicate and/or overspending.
-- To see logs: `systemctl status dca`{:.bash} or `journalctl -u dca`{:.bash}
+- To see logs: `systemctl status dca` or `journalctl -u dca`
