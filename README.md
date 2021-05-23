@@ -11,7 +11,7 @@ Logs are streamed out to Telegram and systemd units are provided to watch for an
 
 ## Getting started
 ### Installing prerequisites
-```(bash)
+```bash
 sudo apt install -y python3 python3-venv
 python3 -V # Version *must* be 3.7+ in order for asyncio to work
 git clone https://github.com/admrply/dca-crypto.git
@@ -36,7 +36,7 @@ pip install -r requirements.txt
     
 ### Setting your DCA amounts
 In `main.py`, set your DCA amounts in the asyncio entrypoint:
-```(python)
+```python
 async def main():
     await asyncio.gather(
         dca("BTC", "GBP", 120, "1w"),
