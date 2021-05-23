@@ -1,0 +1,12 @@
+[Unit]
+Description=Binance-DCA failure notification
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/dca-crypto
+Environment="PATH=/home/ubuntu/dca-crypto/env/bin"
+ExecStart=/home/ubuntu/dca-crypto/notify-crash.py %i
+
+[Install]
+WantedBy=multi-user.target
