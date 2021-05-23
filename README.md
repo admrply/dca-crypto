@@ -32,10 +32,10 @@ async def main():
 - The fourth param is a string indicating the tick length.
     - The format for this 'time string' can contain any combination of weeks (w), days (d), hours (h), minutes (m) and seconds (s).
     - The following strings are examples of valid time tick strings:
-        - "1w"
-        - "1d"
-        - "3d12h"
-        - "1w3d8h3m24s"
+        - `"1w"`
+        - `"1d"`
+        - `"3d12h"`
+        - `"1w3d8h3m24s"`
 - `dca("BTC", "GBP", 120, "1w")`
     - This line will buy £120 of BTC every week.
     - The script will automatically convert this into buying £10 every 14 hours
