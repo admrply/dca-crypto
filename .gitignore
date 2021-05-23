@@ -1,0 +1,4 @@
+trades.json
+env/*
+.vscode/*
+.DS_Store
