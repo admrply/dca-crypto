@@ -49,7 +49,7 @@ async def main():
 - The fourth param is a string indicating the tick length.
     - The format for this 'time string' can contain any combination of weeks (w), days (d), hours (h), minutes (m) and seconds (s).
     - The following strings are examples of valid time tick strings:
-        - `"1w"`{:.python}
+        - `"1w"`{.python}
         - `"1d"`{:.python}
         - `"3d12h"`{:.python}
         - `"1w3d8h3m24s"`{:.python}
