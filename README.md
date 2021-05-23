@@ -1,7 +1,10 @@
 # DCA Crypto Bot
 This python script uses asyncio and is designed to be run constantly to buy cryptocurrencies on Binance at a set time interval.
+
 This script automatically calculates the lowest possible timeframe for buying based on your schedule. For example, if you wanted to buy £70 of BTC every week, the script would automatically convert this to £10 a day as Binance's minimum order threshold is 10 GBP or 10 USDT. This works the other way too and it will store small amounts of DCA in a buffer and buy when the minimum order threshold is reached.
+
 Logs are streamed out to Telegram and systemd units are provided to watch for and report crashes.
+
 It assumes that you hold all your quote currencies (GBP, USDT, etc.) as well as your BNB in Binance Flexible Savings products (and the BNB Vault) and will withdraw the required amount required from savings and the BNB vault at the time of trade. This isn't required though (but it's probably a good idea for extra APY!) and will only withdraw if there's not enough in the Spot wallet
 
 # Prerequisites
