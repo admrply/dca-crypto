@@ -1,4 +1,5 @@
 trades.json
+config.py
 env/*
 .vscode/*
 .DS_Store
