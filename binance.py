@@ -109,7 +109,7 @@ def place_market_buy(coin_symbol, quot_order_qty):
               'type': 'MARKET',
               'quoteOrderQty': quot_order_qty
               }
-    r = requests.post(BASE_URL + '/api/v3/order/test',
+    r = requests.post(BASE_URL + '/api/v3/order',
                       data=utils.sign(params),
                       headers=headers)
     if r.ok:
