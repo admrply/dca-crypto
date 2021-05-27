@@ -23,7 +23,9 @@ async def dca(base_currency, quote_currency, amount, interval):
     if amount > binance.MINIMUM_ORDER_VALUE:
         min_tick_denominator = amount / binance.MINIMUM_ORDER_VALUE
     # Calculate the delta (in seconds) between DCA ticks
-    timedelta_interval = utils.parse_timedelta_string(interval) / min_tick_denominator
+    full_requested_timedelta = utils.parse_timedelta_string(interval)
+    full_requested_seconds_interval = full_requested_timedelta.total_seconds()
+    timedelta_interval = full_requested_timedelta / min_tick_denominator
     seconds_interval = timedelta_interval.total_seconds()
     logger.info(f"Adding {amount/min_tick_denominator} {quote_currency} to {base_currency} "
                 f"pool at an interval of {timedelta_interval}")
@@ -59,7 +61,7 @@ async def dca(base_currency, quote_currency, amount, interval):
         # It could have failed for a number of reasons, commonly, the global FAST withdrawal limit was hit for the day.
         if trade_status is TRADE.FAILURE:
             # Figure out amount extra to buy for the hour delay
-            extra_hour_tick_amount = amount / seconds_interval * 60 * 60
+            extra_hour_tick_amount = amount / full_requested_seconds_interval * 60 * 60
             logger.warning(f'Setting next dca tick to 1 hour to set trade backoff. '
                            f'Adding {round(extra_hour_tick_amount, 4)} {wallet.quote_currency} to compensate for trade delay.')
             wallet.add_dca(extra_hour_tick_amount)
