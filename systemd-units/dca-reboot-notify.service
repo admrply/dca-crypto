@@ -1,0 +1,13 @@
+[Unit]
+Description=Reboot notifier
+After=network.target
+Type=oneshot
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/dca-crypto
+Environment="PATH=/home/ubuntu/dca-crypto/env/bin"
+ExecStart=/home/ubuntu/dca-crypto/notify-reboot.py
+
+[Install]
+WantedBy=multi-user.target
