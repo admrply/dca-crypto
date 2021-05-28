@@ -72,6 +72,7 @@ Service files have been provided for your convenience in the systemd-units folde
 - Copy these files to `/etc/systemd/system/`
 - Change the folder path in the unit files (`/home/ubuntu/dca-crypto`) to where your repo is stored.
 - Make the entrypoint executable (`chmod +x /path/to/dca-crypto/main.py`)
+- Make the crash nofifier executable (`chmod +x /path/to/dca-crypto/notify-crash.py`)
 - `systemctl daemon-reload`
 - `systemctl start dca`
 - This service will not restart if it crashes to prevent duplicate and/or overspending.
