@@ -14,10 +14,11 @@ class Wallet:
     def __init__(self,
                  base_currency,
                  quote_currency,
+                 symbol,
                  buffered_dca_quote_value=0):
         self.base_currency = base_currency
         self.quote_currency = quote_currency
-        self.symbol = f"{base_currency}{quote_currency}"
+        self.symbol = symbol
         self.buffered_dca_quote_value = buffered_dca_quote_value
 
     def add_dca(self, amount):

@@ -25,9 +25,9 @@ def filter_coins(wallet, coins):
             filtered_coins.append(asset)
     return filtered_coins
 
-def get_single_asset(coin_array, coin_to_get):
+def get_single_asset(coin_array, coin_to_get, key):
     for coin in coin_array:
-        if coin['coin'] == coin_to_get:
+        if coin[key] == coin_to_get:
             return coin
 
 def time_in_range(start, end, x):
@@ -36,17 +36,6 @@ def time_in_range(start, end, x):
         return start <= x <= end
     else:
         return start <= x or x <= end
-
-def hash(params):
-    return hmac.new(bytes(API_SECRET, 'utf-8'),
-                    urllib.parse.urlencode(params).encode('utf-8'),
-                    hashlib.sha256).hexdigest()
-
-def sign(params):
-    params['timestamp'] = round(time.time()*1000)
-    params['signature'] = hash(params)
-    logger.debug(params)
-    return params
 
 def parse_timedelta_string(interval_string):
     regex = re.compile(r'((?P<weeks>\d+?)w)?((?P<days>\d+?)d)?((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?')
@@ -81,16 +70,19 @@ def get_last_trade_datetime(trade_symbol):
     filtered_trades = []
     if len(data['trades']) > 0:
         for trade in data['trades']:
-            if trade['symbol'] == trade_symbol:
+            # TODO, make this exchange agnostic. product_id is CB, symbol is Binance.
+            if trade['product_id'] == trade_symbol:
                 filtered_trades.append(trade)
         if len(filtered_trades) > 0:
-            max_date_trade_entry = max(filtered_trades, key=lambda x:x['transactTime'])
-            max_date = datetime.fromtimestamp(max_date_trade_entry['transactTime']/1000)
+            # TODO, CB 'created_at'. Binance 'transactTime'
+            max_date_trade_entry = max(filtered_trades, key=lambda x:x['created_at'])
+            # max_date = datetime.fromtimestamp(max_date_trade_entry['transactTime']/1000)
+            max_date = datetime.strptime(max_date_trade_entry['created_at'], '%Y-%m-%dT%H:%M:%S.%fZ')
             return max_date
     return datetime.min
 
     
-def parse_market_buy(response):
+def binance_parse_market_buy(response):
     append_to_file(response)
     price_pre_mean = 0
     quantity = 0
@@ -102,3 +94,14 @@ def parse_market_buy(response):
     avg_fill_price = price_pre_mean / len(response['fills'])
     logger.warning(f"Purchased {quantity} {response['symbol']} @ {avg_fill_price} ({response['cummulativeQuoteQty']})")
     return response['cummulativeQuoteQty']
+
+def coinbase_parse_market_buy(response):
+    append_to_file(response)
+    funds = response['funds']
+    symbol = response['product_id']
+    if response['status'] == 'pending':
+        logger.warning(f"Posted a purchase of {symbol} ({funds}). Purchase is pending.")
+    elif response['status'] == 'done':
+        quantity = response['size']
+        price = response['price']
+        logger.warning(f"Purchased {quantity} {symbol} @ {price} ({funds})")
